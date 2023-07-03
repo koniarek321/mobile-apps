@@ -8,7 +8,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.project.ui.theme.SecondActivity
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -28,17 +28,6 @@ fun SetupNavGraph(
         ){
             GameScreen(navController = navController)
         }
-
-
-
-
-
-//       composable(w
-//           route = Screen.History.route
-//        ) {
-//            displayResults(navController = navController)
-//        }
-
         composable(
             route = "History_Screen/{$CALC_ARGUMENT_KEY_LIST}",
             arguments = listOf(
@@ -50,8 +39,5 @@ fun SetupNavGraph(
             val argList = navBackStackEntry.arguments?.getString(CALC_ARGUMENT_KEY_LIST)?.split(",") ?: emptyList()
             displayResults(navController = navController, argList)
         }
-
-
-
 }
 }

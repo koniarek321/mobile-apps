@@ -1,4 +1,3 @@
-import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -15,21 +14,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.project.R
 import com.example.project.Screen
-import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
 
 
-// Dodane zmienne do przechowywania wyników i czasu
+// Dodana lista do przechowywania wyników i czasu
 var resultList: MutableList<String> = mutableListOf()
 
+
+//Sprawdzamy wynik gry - 1 jeśli wygrał gracz, 0 komputer, 2 remis
 fun scorer(faction: String, aaction: String): Int {
-    // winner calculator 1 for player 0 for android 2 means a tie
     var win = 0
     if (faction == aaction)
         win = 2
@@ -48,16 +45,18 @@ fun scorer(faction: String, aaction: String): Int {
     return win
 }
 
-fun genfora(): String {
+//Funkcja do generowania wyboru komputera
+fun compChoice(): String {
     //Android choice generator
     val list = listOf("Rock", "Paper", "Scissor")
     val randomIndex = Random.nextInt(list.size)
     return list[randomIndex]
 }
 
+//funkcja do stworzenia przycisku o konkretnej wartości
 @Composable
 fun Rockpbutton(bvlaue: String, onClick: () -> Unit) {
-    // buttons generator
+
     Button(
         modifier = Modifier
             .height(108.dp)
@@ -69,19 +68,18 @@ fun Rockpbutton(bvlaue: String, onClick: () -> Unit) {
         Text(text = bvlaue)
     }
 }
-
+//funkcja wypisująca wybór gracza i komputera
 @Composable
-fun Playeraction(playera: String, actionc: String) {
-    //player and android choices display
+fun Playeraction(playerChosedItemTitle: String, playerChosedItem: String) {
     Text(
-        text = playera,
+        text = playerChosedItemTitle,
         fontSize = 16.sp,
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentWidth(Alignment.CenterHorizontally)
     )
     Text(
-        text = actionc,
+        text = playerChosedItem,
         fontSize = 32.sp,
         modifier = Modifier
             .fillMaxWidth()
@@ -90,27 +88,25 @@ fun Playeraction(playera: String, actionc: String) {
     )
 }
 
+//Główna funkcja
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun GameScreen(
-    navController: NavController,
-    argList: MutableList<Triple<Int, Int, String>> = mutableListOf()
+    navController: NavController
 ) {
     Image(painter = painterResource(id = R.drawable.tlo),
         contentDescription = null,
         modifier = Modifier.fillMaxSize(),
         contentScale = ContentScale.FillBounds
     )
-    //main compose
-
-    var faction by remember { mutableStateOf("Rock") }
-    var aaction by remember { mutableStateOf("Paper") }
-    var tscore by remember { mutableStateOf("0 / 0") }
-    var pscore by remember { mutableStateOf(0) }
-    var ascore by remember { mutableStateOf(0) }
+    //Zmienne
+    var playerChoice by remember { mutableStateOf("Rock") }
+    var computerChoice by remember { mutableStateOf("Paper") }
+    var pointsRatio by remember { mutableStateOf("0 / 0") }
+    var playerScores by remember { mutableStateOf(0) }
+    var computerScores by remember { mutableStateOf(0) }
     Column {
-        //main column
-
+        //główna kolumna
         Text(
             text = "Score", fontSize = 30.sp, modifier = Modifier
                 .fillMaxWidth()
@@ -118,28 +114,26 @@ fun GameScreen(
                 .padding(top = 16.dp)
         )
         Text(
-            text = tscore, fontSize = 50.sp, modifier = Modifier
+            text = pointsRatio, fontSize = 50.sp, modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally),
             fontWeight = FontWeight.Bold
         )
-
         Row(modifier = Modifier.padding(top = 85.dp)) {
             Column(
                 Modifier
                     .fillMaxWidth(0.5f)
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
-                Playeraction(playera = "You Chose", actionc = faction)
+                Playeraction(playerChosedItemTitle = "You Chose", playerChosedItem = playerChoice)
             }
             Column(
                 Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
-                Playeraction(playera = "Computer chose", actionc = aaction)
+                Playeraction(playerChosedItemTitle = "Computer chose", playerChosedItem = computerChoice)
             }
-
         }
         Row(modifier = Modifier.padding(top = 70.dp)) {
             Column(
@@ -148,14 +142,16 @@ fun GameScreen(
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
                 Rockpbutton(bvlaue = "Rock") {
-                    faction = "Rock"
-                    aaction = genfora()
-                    val win = scorer(faction, aaction)
+                    playerChoice = "Rock"
+                    //generujemy wybór komputera
+                    computerChoice = compChoice()
+                    //sprawdzamy kto wygrał
+                    val win = scorer(playerChoice, computerChoice)
                     if (win == 1)
-                        pscore++
+                        playerScores++
                     else if (win == 0)
-                        ascore++
-                    tscore = "$pscore / $ascore"
+                        computerScores++
+                    pointsRatio = "$playerScores / $computerScores"
                 }
             }
             Column(
@@ -164,14 +160,14 @@ fun GameScreen(
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
                 Rockpbutton(bvlaue = "Paper") {
-                    faction = "Paper"
-                    aaction = genfora()
-                    val win = scorer(faction, aaction)
+                    playerChoice = "Paper"
+                    computerChoice = compChoice()
+                    val win = scorer(playerChoice, computerChoice)
                     if (win == 1)
-                        pscore++
+                        playerScores++
                     else if (win == 0)
-                        ascore++
-                    tscore = "$pscore / $ascore"
+                        computerScores++
+                    pointsRatio = "$playerScores / $computerScores"
                 }
             }
             Column(
@@ -180,17 +176,16 @@ fun GameScreen(
                     .wrapContentWidth(Alignment.CenterHorizontally)
             ) {
                 Rockpbutton(bvlaue = "Scissor") {
-                    faction = "Scissor"
-                    aaction = genfora()
-                    val win = scorer(faction, aaction)
+                    playerChoice = "Scissor"
+                    computerChoice = compChoice()
+                    val win = scorer(playerChoice, computerChoice)
                     if (win == 1)
-                        pscore++
+                        playerScores++
                     else if (win == 0)
-                        ascore++
-                    tscore = "$pscore / $ascore"
+                        computerScores++
+                    pointsRatio = "$playerScores / $computerScores"
                 }
             }
-
         }
         Row(
             verticalAlignment = Alignment.Bottom, modifier = Modifier.fillMaxHeight()
@@ -204,19 +199,16 @@ fun GameScreen(
                     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                     val formattedDateTime = currentDateTime.format(formatter)
 
-                    resultList.add("Wynik: ${pscore}:${ascore}, godzina: ${formattedDateTime}")
-
+                    resultList.add("Wynik: ${playerScores}:${computerScores}, godzina: ${formattedDateTime}")
 
                     println("Wynik gry zapisany.")
                     println(resultList)
-
                 },
                 shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.padding(10.dp)
             ) {
                 Text(text = "Save results")
             }
-
             // Przycisk do kończenia gry i przechodzenia do kolejnego ekranu
             Button(
                 onClick = {
@@ -238,8 +230,6 @@ fun GameScreen(
             ) {
                 Text(text = "History")
             }
-
-
         }
     }
 }

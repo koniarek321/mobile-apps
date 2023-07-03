@@ -26,7 +26,6 @@ import androidx.navigation.NavController
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
-
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Top,
@@ -38,9 +37,8 @@ import androidx.navigation.NavController
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
             )
-
             Spacer(modifier = Modifier.height(16.dp))
-
+            //sprawdzamy stan listy
             if (argList.size > 2) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),

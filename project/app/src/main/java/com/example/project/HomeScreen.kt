@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-
+//Ekran startowy
 @Composable
 fun HomeScreen(navController: NavController) {
-    
+
     MaterialTheme {
         Image(painter = painterResource(id = R.drawable.tlo),
             contentDescription = null,
@@ -29,7 +29,6 @@ fun HomeScreen(navController: NavController) {
             contentScale = ContentScale.FillBounds
             )
         Column(
-
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -39,14 +38,10 @@ fun HomeScreen(navController: NavController) {
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
-                // modifier = Modifier.padding(vertical = 100.dp)
             )
-
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 200.dp)
-
-
             ) {
                 Text(
                     text = "Welcome to the game!",
@@ -58,11 +53,9 @@ fun HomeScreen(navController: NavController) {
                 Button(
                     onClick = {navController.navigate(route = Screen.GameDesign.route)},
                     modifier = Modifier.padding(bottom = 10.dp),
-
                 ) {
                     Text(text = "Start the game")
                 }
-
             }
         }
     }
